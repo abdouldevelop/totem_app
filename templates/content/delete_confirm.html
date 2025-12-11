@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+
+{% block title %}Supprimer {{ content.title }} - Digital Signage{% endblock %}
+
+{% block page_title %}Confirmer la suppression{% endblock %}
+{% block page_subtitle %}Cette action est irréversible{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <!-- Back Button -->
+    <div class="mb-6">
+        <a href="{% url 'content_detail' content.id %}"
+           class="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            Retour aux détails
+        </a>
+    </div>
+
+    <!-- Warning Card -->
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <!-- Warning Header -->
+        <div class="px-6 py-4 bg-red-50 border-b border-red-100">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg class="w-12 h-12 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-lg font-semibold text-red-900">
+                        Attention : Suppression définitive
+                    </h3>
+                    <p class="text-sm text-red-700 mt-1">
+                        Cette action ne peut pas être annulée
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Info -->
+        <div class="p-6">
+            <p class="text-gray-700 mb-6">
+                Vous êtes sur le point de supprimer le contenu suivant :
+            </p>
+
+            <!-- Content Preview -->
+            <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                <div class="flex items-start space-x-4">
+                    <!-- Thumbnail -->
+                    <div class="flex-shrink-0">
+                        <div class="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden">
+                            {% if content.content_type == 'image' and content.file %}
+                            <img src="{{ content.file.url }}" alt="{{ content.title }}" class="w-full h-full object-cover">
+                            {% elif content.content_type == 'video' %}
+                            <div class="w-full h-full bg-gray-900 flex items-center justify-center">
+                                <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
+                            {% elif content.content_type == 'web' %}
+                            <div class="w-full h-full bg-blue-500 flex items-center justify-center">
+                                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+                                </svg>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Info -->
+                    <div class="flex-1">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">{{ content.title }}</h4>
+                        <dl class="space-y-1 text-sm">
+                            <div class="flex">
+                                <dt class="text-gray-500 w-24">Type:</dt>
+                                <dd class="text-gray-900 font-medium">
+                                    {% if content.content_type == 'image' %}Image
+                                    {% elif content.content_type == 'video' %}Vidéo
+                                    {% elif content.content_type == 'web' %}Page Web
+                                    {% else %}{{ content.get_content_type_display }}
+                                    {% endif %}
+                                </dd>
+                            </div>
+                            <div class="flex">
+                                <dt class="text-gray-500 w-24">Créé le:</dt>
+                                <dd class="text-gray-900">{{ content.created_at|date:"d/m/Y" }}</dd>
+                            </div>
+                            <div class="flex">
+                                <dt class="text-gray-500 w-24">Durée:</dt>
+                                <dd class="text-gray-900">{{ content.duration }}s</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Impact Warning -->
+            {% if content.playlistitem_set.count > 0 %}
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-yellow-600 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <div class="flex-1">
+                        <h4 class="text-sm font-semibold text-yellow-900 mb-1">Impact sur les playlists</h4>
+                        <p class="text-sm text-yellow-800">
+                            Ce contenu est utilisé dans <strong>{{ content.playlistitem_set.count }} playlist(s)</strong>.
+                            Il sera automatiquement retiré de ces playlists.
+                        </p>
+                        <div class="mt-3 space-y-1">
+                            {% for item in content.playlistitem_set.all %}
+                            <div class="text-xs text-yellow-700">
+                                • {{ item.playlist.name }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Confirmation Checklist -->
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+                <h4 class="text-sm font-semibold text-gray-900 mb-3">Conséquences de cette action :</h4>
+                <ul class="space-y-2 text-sm text-gray-700">
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 text-red-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        Le contenu sera définitivement supprimé
+                    </li>
+                    {% if content.file %}
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 text-red-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        Le fichier média sera supprimé du serveur
+                    </li>
+                    {% endif %}
+                    {% if content.playlistitem_set.count > 0 %}
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 text-red-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        Le contenu sera retiré de toutes les playlists
+                    </li>
+                    {% endif %}
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 text-red-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        Cette action ne peut pas être annulée
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Confirmation Form -->
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+
+                <!-- Confirmation Checkbox -->
+                <label class="flex items-start">
+                    <input type="checkbox" required
+                           class="mt-1 w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
+                    <span class="ml-3 text-sm text-gray-700">
+                        Je comprends que cette action est irréversible et je souhaite supprimer définitivement ce contenu.
+                    </span>
+                </label>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+                    <a href="{% url 'content_detail' content.id %}"
+                       class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                        Annuler
+                    </a>
+                    <button type="submit"
+                            class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors shadow-sm flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Supprimer définitivement
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

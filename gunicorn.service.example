@@ -1,0 +1,53 @@
+# ===================================
+# SERVICE SYSTEMD POUR GUNICORN
+# ===================================
+# Ce fichier doit être copié dans /etc/systemd/system/gunicorn-digital-signage.service
+
+[Unit]
+Description=Gunicorn daemon for Digital Signage
+After=network.target
+
+[Service]
+Type=notify
+User=www-data
+Group=www-data
+WorkingDirectory=/chemin/vers/digital_signage_project/backend
+Environment="PATH=/chemin/vers/digital_signage_project/backend/venv/bin"
+
+# Commande pour démarrer Gunicorn
+ExecStart=/chemin/vers/digital_signage_project/backend/venv/bin/gunicorn \
+    --workers 4 \
+    --bind 127.0.0.1:8000 \
+    --timeout 60 \
+    --access-logfile /var/log/gunicorn/digital-signage-access.log \
+    --error-logfile /var/log/gunicorn/digital-signage-error.log \
+    --log-level info \
+    config.wsgi:application
+
+# Redémarrage automatique en cas d'échec
+Restart=always
+RestartSec=10
+
+# Sécurité
+PrivateTmp=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
+
+# ===================================
+# INSTRUCTIONS D'INSTALLATION
+# ===================================
+# 1. Remplacez '/chemin/vers/digital_signage_project' par le chemin réel
+# 2. Ajustez User et Group selon votre configuration (peut être votre utilisateur)
+# 3. Créez le dossier des logs : sudo mkdir -p /var/log/gunicorn
+# 4. Copiez ce fichier : sudo cp gunicorn.service.example /etc/systemd/system/gunicorn-digital-signage.service
+# 5. Rechargez systemd : sudo systemctl daemon-reload
+# 6. Démarrez le service : sudo systemctl start gunicorn-digital-signage
+# 7. Activez le démarrage automatique : sudo systemctl enable gunicorn-digital-signage
+# 8. Vérifiez le statut : sudo systemctl status gunicorn-digital-signage
+#
+# COMMANDES UTILES :
+# - Redémarrer : sudo systemctl restart gunicorn-digital-signage
+# - Arrêter : sudo systemctl stop gunicorn-digital-signage
+# - Voir les logs : sudo journalctl -u gunicorn-digital-signage -f

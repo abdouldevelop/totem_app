@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}Logs - {{ screen.name }} - Digital Signage{% endblock %}
+
+{% block page_title %}Logs d'activité{% endblock %}
+{% block page_subtitle %}{{ screen.name }} - {{ screen.location }}{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex items-center justify-between">
+    <a href="{% url 'screen_detail' screen.id %}"
+       class="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Retour à l'écran
+    </a>
+
+    <a href="{% url 'screen_download_logs' screen.id %}"
+       class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+        </svg>
+        Télécharger les logs (CSV)
+    </a>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <!-- Header -->
+    <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-xl font-bold text-gray-900">Historique complet</h2>
+                <p class="text-sm text-gray-500 mt-1">{{ logs.count }} entrée(s) au total</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logs List -->
+    <div class="divide-y divide-gray-200">
+        {% for log in logs %}
+        <div class="px-6 py-4 hover:bg-gray-50 transition-colors">
+            <div class="flex items-start space-x-4">
+                <!-- Icon -->
+                <div class="flex-shrink-0">
+                    {% if 'error' in log.action or 'fail' in log.action %}
+                    <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    {% elif 'heartbeat' in log.action or 'online' in log.action %}
+                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    {% elif 'restart' in log.action %}
+                    <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                        <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                    </div>
+                    {% else %}
+                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Log Content -->
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-sm font-semibold text-gray-900">{{ log.action|title }}</h4>
+                        <span class="text-xs text-gray-500">{{ log.timestamp|date:"d/m/Y H:i:s" }}</span>
+                    </div>
+
+                    {% if log.details %}
+                    <div class="mt-2 p-3 bg-gray-50 rounded-lg">
+                        <pre class="text-xs text-gray-600 whitespace-pre-wrap font-mono">{{ log.details }}</pre>
+                    </div>
+                    {% endif %}
+
+                    {% if log.content %}
+                    <div class="mt-2 flex items-center text-sm text-gray-500">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        Contenu: {{ log.content.title }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="px-6 py-12 text-center">
+            <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <p class="text-gray-500">Aucun log disponible pour cet écran</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if logs.has_other_pages %}
+    <div class="px-6 py-4 border-t border-gray-200 flex justify-center">
+        <nav class="flex items-center space-x-2">
+            {% if logs.has_previous %}
+            <a href="?page={{ logs.previous_page_number }}"
+               class="px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                Précédent
+            </a>
+            {% endif %}
+
+            <span class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium">
+                Page {{ logs.number }}
+            </span>
+
+            {% if logs.has_next %}
+            <a href="?page={{ logs.next_page_number }}"
+               class="px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                Suivant
+            </a>
+            {% endif %}
+        </nav>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

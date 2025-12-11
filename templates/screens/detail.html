@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ screen.name }} - Détails - Digital Signage{% endblock %}
+
+{% block page_title %}{{ screen.name }}{% endblock %}
+{% block page_subtitle %}
+    <div class="flex items-center mt-2">
+        {% if screen.is_online %}
+        <span class="flex items-center text-sm text-green-600 font-medium mr-4">
+            <span class="w-2 h-2 bg-green-500 rounded-full mr-2 status-pulse"></span>
+            En ligne
+        </span>
+        {% else %}
+        <span class="flex items-center text-sm text-gray-400 font-medium mr-4">
+            <span class="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+            Hors ligne
+        </span>
+        {% endif %}
+        <span class="text-sm text-gray-500">{{ screen.location|default:"Emplacement non défini" }}</span>
+    </div>
+{% endblock %}
+
+{% block content %}
+<!-- Back Button -->
+<div class="mb-6">
+    <a href="{% url 'screens_list' %}"
+       class="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Retour à la liste
+    </a>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Main Info -->
+    <div class="lg:col-span-2 space-y-6">
+        <!-- Screen Details Card -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">Informations de l'écran</h3>
+                <a href="{% url 'screen_edit' screen.id %}"
+                   class="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium inline-flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                    Modifier
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="text-sm font-medium text-gray-500 mb-1 block">Nom de l'écran</label>
+                    <p class="text-gray-900 font-medium">{{ screen.name }}</p>
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium text-gray-500 mb-1 block">Emplacement</label>
+                    <p class="text-gray-900 font-medium">{{ screen.location|default:"Non défini" }}</p>
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium text-gray-500 mb-1 block">Device ID</label>
+                    <p class="text-gray-900 font-mono text-sm">{{ screen.device_id }}</p>
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium text-gray-500 mb-1 block">Statut</label>
+                    {% if screen.is_online %}
+                    <span class="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2 status-pulse"></span>
+                        En ligne
+                    </span>
+                    {% else %}
+                    <span class="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-medium">
+                        <span class="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                        Hors ligne depuis {{ screen.last_heartbeat|timesince }}
+                    </span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium text-gray-500 mb-1 block">Date d'enregistrement</label>
+                    <p class="text-gray-900">{{ screen.registered_at|date:"d/m/Y H:i" }}</p>
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium text-gray-500 mb-1 block">Dernière activité</label>
+                    <p class="text-gray-900">{{ screen.last_heartbeat|date:"d/m/Y H:i" }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Playlist Card -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">Playlist actuelle</h3>
+                <a href="{% url 'screen_assign_playlist' screen.id %}"
+                   class="px-4 py-2 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors text-sm font-medium">
+                    Changer de playlist
+                </a>
+            </div>
+
+            {% if screen.current_playlist %}
+            <div class="border border-gray-200 rounded-lg p-4">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h4 class="font-semibold text-gray-900 mb-1">{{ screen.current_playlist.name }}</h4>
+                        <p class="text-sm text-gray-500">{{ screen.current_playlist.description|default:"Aucune description" }}</p>
+                    </div>
+                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium">Active</span>
+                </div>
+
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-500">{{ screen.current_playlist.contents.count }} contenu(s)</span>
+                    <a href="{% url 'playlist_detail' screen.current_playlist.id %}" class="text-blue-600 hover:text-blue-700 font-medium">
+                        Voir la playlist →
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <div class="text-center py-8">
+                <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+                <p class="text-gray-500 mb-4">Aucune playlist assignée à cet écran</p>
+                <a href="{% url 'screen_assign_playlist' screen.id %}"
+                   class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                    Assigner une playlist
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Activity Logs -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-6">Logs d'activité récents</h3>
+
+            <div class="space-y-3">
+                {% for log in screen_logs %}
+                <div class="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                    <div class="flex-shrink-0">
+                        {% if log.event_type == 'heartbeat' %}
+                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        {% elif log.event_type == 'error' %}
+                        <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                            <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        {% else %}
+                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900">{{ log.message }}</p>
+                        <p class="text-xs text-gray-500 mt-1">{{ log.created_at|date:"d/m/Y H:i:s" }}</p>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center text-gray-500 py-8">Aucun log disponible</p>
+                {% endfor %}
+            </div>
+
+            <div class="mt-4 text-center">
+                <a href="{% url 'screen_logs' screen.id %}"
+                   class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                    Voir tous les logs
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="space-y-6">
+        <!-- Quick Stats -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-6">Statistiques</h3>
+
+            <div class="space-y-4">
+                <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500">Vues totales</p>
+                            <p class="text-lg font-bold text-gray-900">1,234</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500">Temps actif</p>
+                            <p class="text-lg font-bold text-gray-900">98.5%</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
+                            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500">Heartbeats (24h)</p>
+                            <p class="text-lg font-bold text-gray-900">288</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Actions rapides</h3>
+
+            <div class="space-y-2">
+                <a href="{% url 'screen_restart' screen.id %}"
+                   onclick="return confirm('Êtes-vous sûr de vouloir redémarrer cet écran ?')"
+                   class="w-full flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Redémarrer l'écran
+                </a>
+
+                <a href="{% url 'screen_download_logs' screen.id %}"
+                   class="w-full flex items-center justify-center px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    Télécharger les logs
+                </a>
+
+                <a href="{% url 'screen_configuration' screen.id %}"
+                   class="w-full flex items-center justify-center px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    Configuration
+                </a>
+
+                <a href="{% url 'screen_delete' screen.id %}"
+                   class="w-full flex items-center justify-center px-4 py-3 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    Supprimer l'écran
+                </a>
+            </div>
+        </div>
+
+        <!-- Device Info -->
+        <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-sm p-6 text-white">
+            <h3 class="text-lg font-semibold mb-4">Informations système</h3>
+
+            <div class="space-y-3 text-sm">
+                <div class="flex justify-between">
+                    <span class="text-gray-400">OS Version:</span>
+                    <span class="font-medium">Android 11</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">App Version:</span>
+                    <span class="font-medium">1.2.0</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">IP Address:</span>
+                    <span class="font-mono text-xs">192.168.1.100</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Résolution:</span>
+                    <span class="font-medium">1920x1080</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

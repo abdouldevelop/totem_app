@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+
+{% block title %}Analytics - Digital Signage{% endblock %}
+
+{% block page_title %}Analytics & Rapports{% endblock %}
+{% block page_subtitle %}Analysez les performances de votre système d'affichage{% endblock %}
+
+{% block content %}
+<!-- Date Range Selector -->
+<div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div class="flex items-center space-x-3">
+        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            7 derniers jours
+        </button>
+        <button class="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+            30 jours
+        </button>
+        <button class="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+            90 jours
+        </button>
+        <button class="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+            Personnalisé
+        </button>
+    </div>
+
+    <button class="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        Exporter le rapport
+    </button>
+</div>
+
+<!-- KPI Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+            </div>
+            <span class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full font-medium">+12%</span>
+        </div>
+        <h3 class="text-3xl font-bold text-gray-900 mb-1">12,459</h3>
+        <p class="text-sm text-gray-500">Total des vues</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <span class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full font-medium">98.5%</span>
+        </div>
+        <h3 class="text-3xl font-bold text-gray-900 mb-1">167h 23m</h3>
+        <p class="text-sm text-gray-500">Temps d'affichage total</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+            </div>
+            <span class="text-xs px-2 py-1 bg-red-100 text-red-800 rounded-full font-medium">-2</span>
+        </div>
+        <h3 class="text-3xl font-bold text-gray-900 mb-1">15/17</h3>
+        <p class="text-sm text-gray-500">Écrans actifs</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                </svg>
+            </div>
+            <span class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full font-medium">+23%</span>
+        </div>
+        <h3 class="text-3xl font-bold text-gray-900 mb-1">89.2%</h3>
+        <p class="text-sm text-gray-500">Taux d'engagement</p>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- Views Over Time -->
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-6">Vues au fil du temps</h3>
+        <canvas id="viewsChart" height="250"></canvas>
+    </div>
+
+    <!-- Content Performance -->
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-6">Performance des contenus</h3>
+        <canvas id="contentChart" height="250"></canvas>
+    </div>
+
+    <!-- Screen Uptime -->
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-6">Disponibilité des écrans</h3>
+        <canvas id="uptimeChart" height="250"></canvas>
+    </div>
+
+    <!-- Top Playlists -->
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-6">Top 5 Playlists</h3>
+        <div class="space-y-4">
+            {% for i in "12345" %}
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div class="flex items-center flex-1">
+                    <span class="w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center font-semibold mr-3">{{ i }}</span>
+                    <div>
+                        <p class="font-medium text-gray-900">Playlist {{ i }}</p>
+                        <p class="text-xs text-gray-500">1,234 vues</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm font-semibold text-gray-900">45.2%</p>
+                    <p class="text-xs text-gray-500">du total</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Tables -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Screen Performance -->
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">Performance par écran</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Écran</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Vues</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Uptime</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for i in "12345" %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-sm font-medium text-gray-900">Écran {{ i }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1,234</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">99.2%</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Recent Events -->
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">Événements récents</h3>
+        </div>
+        <div class="p-6">
+            <div class="space-y-4">
+                {% for i in "12345" %}
+                <div class="flex items-start space-x-3">
+                    <div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-900">Écran {{ i }} a affiché "Playlist Marketing"</p>
+                        <p class="text-xs text-gray-500 mt-1">Il y a {{ i }} heures</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Attendre que Chart.js soit chargé
+    function initCharts() {
+        if (typeof Chart === 'undefined') {
+            // Si Chart.js n'est pas encore chargé, réessayer dans 100ms
+            setTimeout(initCharts, 100);
+            return;
+        }
+
+        try {
+            // Views Chart
+            const viewsCtx = document.getElementById('viewsChart');
+            if (viewsCtx) {
+                new Chart(viewsCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+                        datasets: [{
+                            label: 'Vues',
+                            data: [1200, 1900, 1500, 2100, 1800, 2400, 2200],
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: { duration: 500 },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            // Content Performance Chart
+            const contentCtx = document.getElementById('contentChart');
+            if (contentCtx) {
+                new Chart(contentCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Images', 'Vidéos', 'Pages Web'],
+                        datasets: [{
+                            data: [45, 35, 20],
+                            backgroundColor: ['#3b82f6', '#10b981', '#f59e0b']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: { duration: 500 }
+                    }
+                });
+            }
+
+            // Uptime Chart
+            const uptimeCtx = document.getElementById('uptimeChart');
+            if (uptimeCtx) {
+                new Chart(uptimeCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+                        datasets: [{
+                            label: 'Uptime %',
+                            data: [98, 99, 97, 100, 99, 98, 99],
+                            backgroundColor: 'rgba(16, 185, 129, 0.8)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: { duration: 500 },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Erreur lors de la création des graphiques:', error);
+        }
+    }
+
+    // Démarrer l'initialisation quand la page est prête
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCharts);
+    } else {
+        initCharts();
+    }
+</script>
+{% endblock %}

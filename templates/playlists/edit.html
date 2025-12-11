@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+
+{% block title %}Modifier {{ playlist.name }} - Digital Signage{% endblock %}
+
+{% block page_title %}Modifier la Playlist{% endblock %}
+{% block page_subtitle %}Mettez à jour les informations de votre playlist{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Back Button -->
+    <div class="mb-6">
+        <a href="{% url 'playlist_detail' playlist.id %}"
+           class="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            Retour aux détails
+        </a>
+    </div>
+
+    <form method="post" class="bg-white rounded-xl shadow-sm p-8">
+        {% csrf_token %}
+
+        <!-- Playlist Name -->
+        <div class="mb-6">
+            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                Nom de la playlist <span class="text-red-500">*</span>
+            </label>
+            <input type="text"
+                   id="name"
+                   name="name"
+                   value="{{ playlist.name }}"
+                   required
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                   placeholder="Ex: Playlist Principale">
+        </div>
+
+        <!-- Description -->
+        <div class="mb-6">
+            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                Description
+            </label>
+            <textarea id="description"
+                      name="description"
+                      rows="3"
+                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Décrivez brièvement cette playlist...">{{ playlist.description }}</textarea>
+        </div>
+
+        <!-- Schedule Section -->
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Planification</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Start Date -->
+                <div>
+                    <label for="schedule_start_date" class="block text-sm font-medium text-gray-700 mb-2">
+                        Date de début
+                    </label>
+                    <input type="date"
+                           id="schedule_start_date"
+                           name="schedule_start_date"
+                           value="{{ playlist.start_date|date:'Y-m-d' }}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+
+                <!-- End Date -->
+                <div>
+                    <label for="schedule_end_date" class="block text-sm font-medium text-gray-700 mb-2">
+                        Date de fin
+                    </label>
+                    <input type="date"
+                           id="schedule_end_date"
+                           name="schedule_end_date"
+                           value="{{ playlist.end_date|date:'Y-m-d' }}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+
+                <!-- Start Time -->
+                <div>
+                    <label for="schedule_start_time" class="block text-sm font-medium text-gray-700 mb-2">
+                        Heure de début
+                    </label>
+                    <input type="time"
+                           id="schedule_start_time"
+                           name="schedule_start_time"
+                           value="{{ playlist.start_time }}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+
+                <!-- End Time -->
+                <div>
+                    <label for="schedule_end_time" class="block text-sm font-medium text-gray-700 mb-2">
+                        Heure de fin
+                    </label>
+                    <input type="time"
+                           id="schedule_end_time"
+                           name="schedule_end_time"
+                           value="{{ playlist.end_time }}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+            </div>
+
+            <!-- Days of Week -->
+            <div class="mt-6">
+                <label class="block text-sm font-medium text-gray-700 mb-3">
+                    Jours de la semaine
+                </label>
+                <div class="flex flex-wrap gap-3">
+                    {% for day_num, day_name in weekdays %}
+                    <label class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                        <input type="checkbox" name="days[]" value="{{ day_num }}"
+                               {% if day_num in playlist.weekdays %}checked{% endif %}
+                               class="mr-2 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <span class="text-sm text-gray-700">{{ day_name }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Priority -->
+            <div class="mt-6">
+                <label for="priority" class="block text-sm font-medium text-gray-700 mb-2">
+                    Priorité
+                </label>
+                <input type="number"
+                       id="priority"
+                       name="priority"
+                       value="{{ playlist.priority }}"
+                       min="0"
+                       max="100"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <p class="text-xs text-gray-500 mt-1">Plus le nombre est élevé, plus la priorité est haute</p>
+            </div>
+        </div>
+
+        <!-- Screen Assignment -->
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                Assigner aux écrans
+            </h3>
+
+            <div class="border border-gray-300 rounded-lg p-4 max-h-64 overflow-y-auto">
+                {% if available_screens %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {% for screen in available_screens %}
+                    <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                        <input type="checkbox" name="screens[]" value="{{ screen.id }}"
+                               {% if screen.id in selected_screen_ids %}checked{% endif %}
+                               class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <div class="ml-3 flex items-center flex-1">
+                            <div class="w-10 h-10 bg-gray-100 rounded-lg mr-3 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">{{ screen.name }}</p>
+                                <p class="text-xs text-gray-500 truncate">{{ screen.location|default:"Sans localisation" }}</p>
+                            </div>
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-8">
+                    <svg class="w-16 h-16 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    <p class="text-sm text-gray-500 mb-3">Aucun écran enregistré</p>
+                    <a href="{% url 'screens_list' %}" class="text-sm text-blue-600 hover:text-blue-700">
+                        Ajouter un écran
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Content Selection -->
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                Gérer les contenus
+            </h3>
+
+            <div class="border border-gray-300 rounded-lg p-4 max-h-96 overflow-y-auto">
+                {% if available_contents %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {% for content in available_contents %}
+                    <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                        <input type="checkbox" name="contents[]" value="{{ content.id }}"
+                               {% if content.id in selected_content_ids %}checked{% endif %}
+                               class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <div class="ml-3 flex items-center flex-1">
+                            <div class="w-12 h-12 bg-gray-200 rounded-lg mr-3 overflow-hidden">
+                                {% if content.content_type == 'image' and content.file %}
+                                <img src="{{ content.file.url }}" alt="{{ content.title }}" class="w-full h-full object-cover">
+                                {% elif content.content_type == 'video' %}
+                                <div class="w-full h-full bg-gray-900 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                                {% elif content.content_type == 'web' %}
+                                <div class="w-full h-full bg-blue-500 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+                                    </svg>
+                                </div>
+                                {% else %}
+                                <div class="w-full h-full bg-gray-300 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">{{ content.title }}</p>
+                                <p class="text-xs text-gray-500">
+                                    <span class="inline-block px-1.5 py-0.5 rounded text-xs bg-blue-100 text-blue-800 mr-1">
+                                        {{ content.get_content_type_display }}
+                                    </span>
+                                    {{ content.duration }}s
+                                </p>
+                            </div>
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-8">
+                    <svg class="w-16 h-16 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <p class="text-sm text-gray-500 mb-3">Aucun contenu disponible</p>
+                    <a href="{% url 'content_create' %}" class="text-sm text-blue-600 hover:text-blue-700">
+                        Créer un contenu
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Active Checkbox -->
+        <div class="mb-8">
+            <label class="flex items-center">
+                <input type="checkbox" name="is_active" {% if playlist.is_active %}checked{% endif %}
+                       class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">Activer cette playlist</span>
+            </label>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex items-center justify-between pt-6 border-t border-gray-200">
+            <a href="{% url 'playlist_detail' playlist.id %}"
+               class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                Annuler
+            </a>
+            <button type="submit"
+                    class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+                Enregistrer les modifications
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
