@@ -148,14 +148,9 @@ REST_FRAMEWORK = {
 }
 
 # CORS
-# En développement, on autorise toutes les origines
-# En production, seules les origines spécifiées sont autorisées
-CORS_ALLOW_ALL_ORIGINS = DEBUG
-if not DEBUG:
-    cors_origins = config('CORS_ALLOWED_ORIGINS', default='').strip()
-    CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins.split(',') if origin.strip()]
-else:
-    CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'http://localhost:19006']
+# Autoriser toutes les origines pour l'API mobile
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 # Permettre les headers personnalisés pour l'authentification des écrans
 CORS_ALLOW_HEADERS = [
