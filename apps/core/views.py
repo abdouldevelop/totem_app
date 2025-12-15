@@ -55,7 +55,7 @@ def analytics(request):
     # Statistiques pour les KPIs
     active_playlists_count = Playlist.objects.filter(is_active=True).count()
     scheduled_playlists_count = Playlist.objects.exclude(
-        schedule_start_date__isnull=True
+        start_date__isnull=True
     ).count()
     total_contents_count = Content.objects.count()
     assigned_screens_count = Screen.objects.exclude(
