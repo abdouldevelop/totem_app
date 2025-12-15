@@ -19,10 +19,10 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd /var/www/totem_app
+          cd /var/www/totem_app/totem_app
           git pull origin main
-          source venv/bin/activate
+          source ../venv/bin/activate
           pip install -r requirements.txt
           python manage.py migrate --noinput
           python manage.py collectstatic --noinput
-          sudo systemctl restart totem_app
+          sudo systemctl reload apache2
